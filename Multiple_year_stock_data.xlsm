@@ -1,0 +1,127 @@
+Sub ticker():
+
+For Each ws In Worksheets
+Dim WorksheetName As String
+Dim ticker As Long
+Dim LastRow As Long
+Dim column As Integer
+column = 1
+Dim LastTickerRow As Long
+Dim PercentageChange As Double
+Dim increase As Double
+Dim decrease As Double
+Dim volume As Double
+WorksheetName = ws.Name
+
+
+
+ticker = 2
+j = 2
+
+LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Percentage Change"
+ws.Cells(1, 12).Value = "Total Stock Volume"
+
+For i = 2 To LastRow
+
+If ws.Cells(i + 1, column).Value <> ws.Cells(i, column).Value Then
+ws.Cells(ticker, 9).Value = ws.Cells(i, 1).Value
+
+ws.Cells(ticker, 10).Value = ws.Cells(i, 6).Value - ws.Cells(j, 3).Value
+
+    If ws.Cells(ticker, 10).Value < 0 Then
+    ws.Cells(ticker, 10).Interior.ColorIndex = 3
+
+    Else
+
+    ws.Cells(ticker, 10).Interior.ColorIndex = 4
+    
+    End If
+
+If ws.Cells(j, 3).Value <> 0 Then
+
+PercentageChange = ((ws.Cells(i, 6).Value - ws.Cells(j, 3).Value) / ws.Cells(j, 3).Value)
+
+ws.Cells(ticker, 11).Value = Format(PercentageChange, "Percent")
+
+Else
+
+ws.Cells(ticker, 11).Value = Format(0, "Percent")
+
+End If
+
+ws.Cells(ticker, 12).Value = WorksheetFunction.Sum(Range(ws.Cells(j, 7), ws.Cells(i, 7)))
+
+ticker = ticker + 1
+
+j = i + 1
+
+
+End If
+
+Next i
+
+ws.Cells(2, 15).Value = "Greatest % Increase"
+ws.Cells(3, 15).Value = "Greatest % Decrease"
+ws.Cells(4, 15).Value = "Greatest Total Volume"
+ws.Cells(1, 16).Value = "Ticker"
+ws.Cells(1, 17).Value = "Value"
+
+increase = ws.Cells(2, 11).Value
+decrease = ws.Cells(2, 11).Value
+volume = ws.Cells(2, 12).Value
+
+LastTickerRow = ws.Cells(Rows.Count, 9).End(xlUp).Row
+
+For i = 2 To LastTickerRow
+
+
+If ws.Cells(i, 11).Value > increase Then
+    increase = ws.Cells(i, 11).Value
+    ws.Cells(2, 16).Value = ws.Cells(i, 9).Value
+                
+Else
+                
+increase = increase
+                
+End If
+                
+If ws.Cells(i, 11).Value < decrease Then
+    decrease = ws.Cells(i, 11).Value
+    ws.Cells(3, 16).Value = ws.Cells(i, 9).Value
+                
+    Else
+                
+    decrease = decrease
+                
+    End If
+
+
+If ws.Cells(i, 12).Value > volume Then
+    volume = ws.Cells(i, 12).Value
+    ws.Cells(4, 16).Value = ws.Cells(i, 9).Value
+                
+    Else
+    
+    volume = volume
+    
+    End If
+
+Next i
+
+ws.Cells(2, 17).Value = Format(increase, "Percent")
+ws.Cells(3, 17).Value = Format(decrease, "Percent")
+ws.Cells(4, 17).Value = Format(volume, "Scientific")
+            
+
+
+
+Next ws
+
+
+
+End Sub
+
