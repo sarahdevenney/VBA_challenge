@@ -1,5 +1,6 @@
 Sub ticker():
 
+#define variables 
 For Each ws In Worksheets
 Dim WorksheetName As String
 Dim ticker As Long
@@ -13,24 +14,27 @@ Dim decrease As Double
 Dim volume As Double
 WorksheetName = ws.Name
 
-
-
 ticker = 2
 j = 2
 
+#find the last row
 LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
 
+#name the column headers in each worksheet
 ws.Cells(1, 9).Value = "Ticker"
 ws.Cells(1, 10).Value = "Yearly Change"
 ws.Cells(1, 11).Value = "Percentage Change"
 ws.Cells(1, 12).Value = "Total Stock Volume"
 
+#loop through rows to see if ticker changed
 For i = 2 To LastRow
 
 If ws.Cells(i + 1, column).Value <> ws.Cells(i, column).Value Then
 ws.Cells(ticker, 9).Value = ws.Cells(i, 1).Value
 
 ws.Cells(ticker, 10).Value = ws.Cells(i, 6).Value - ws.Cells(j, 3).Value
+
+#conditional formatting 
 
     If ws.Cells(ticker, 10).Value < 0 Then
     ws.Cells(ticker, 10).Interior.ColorIndex = 3
@@ -41,6 +45,7 @@ ws.Cells(ticker, 10).Value = ws.Cells(i, 6).Value - ws.Cells(j, 3).Value
     
     End If
 
+#calculate percentage change 
 If ws.Cells(j, 3).Value <> 0 Then
 
 PercentageChange = ((ws.Cells(i, 6).Value - ws.Cells(j, 3).Value) / ws.Cells(j, 3).Value)
@@ -64,18 +69,21 @@ End If
 
 Next i
 
+#create column headers
 ws.Cells(2, 15).Value = "Greatest % Increase"
 ws.Cells(3, 15).Value = "Greatest % Decrease"
 ws.Cells(4, 15).Value = "Greatest Total Volume"
 ws.Cells(1, 16).Value = "Ticker"
 ws.Cells(1, 17).Value = "Value"
 
+#define variables 
 increase = ws.Cells(2, 11).Value
 decrease = ws.Cells(2, 11).Value
 volume = ws.Cells(2, 12).Value
 
 LastTickerRow = ws.Cells(Rows.Count, 9).End(xlUp).Row
 
+#loop through and check if the next value if greater increase 
 For i = 2 To LastTickerRow
 
 
@@ -88,7 +96,9 @@ Else
 increase = increase
                 
 End If
-                
+
+#loop through and check if decrease is smaller
+
 If ws.Cells(i, 11).Value < decrease Then
     decrease = ws.Cells(i, 11).Value
     ws.Cells(3, 16).Value = ws.Cells(i, 9).Value
@@ -99,7 +109,7 @@ If ws.Cells(i, 11).Value < decrease Then
                 
     End If
 
-
+#loop thorugh and check if next value is greater
 If ws.Cells(i, 12).Value > volume Then
     volume = ws.Cells(i, 12).Value
     ws.Cells(4, 16).Value = ws.Cells(i, 9).Value
@@ -112,6 +122,7 @@ If ws.Cells(i, 12).Value > volume Then
 
 Next i
 
+#put results in all worksheet 
 ws.Cells(2, 17).Value = Format(increase, "Percent")
 ws.Cells(3, 17).Value = Format(decrease, "Percent")
 ws.Cells(4, 17).Value = Format(volume, "Scientific")
